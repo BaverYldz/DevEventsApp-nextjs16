@@ -12,6 +12,7 @@ import Event from "./event.model";
 // TypeScript interface for Booking document
 export interface IBooking extends Document {
     eventId: Types.ObjectId;
+    slug: string;
     email: string;
     createdAt: Date;
     updatedAt: Date;
@@ -28,6 +29,12 @@ const BookingSchema = new Schema<IBooking>(
             ref: "Event",
             required: [true, "Event ID is required"],
             index: true, // Index for faster queries on event lookups
+        },
+        slug: {
+            type: String,
+            required: [true, "Event slug is required"],
+            trim: true,
+            lowercase: true,
         },
         email: {
             type: String,
@@ -54,20 +61,17 @@ BookingSchema.index({ eventId: 1, email: 1 }, { unique: true });
  * Validates that the referenced eventId corresponds to an existing Event.
  * Throws an error if the event does not exist to maintain referential integrity.
  */
-BookingSchema.pre("save", async function (next) {
+BookingSchema.pre("save", async function () {
     // Only validate eventId if it's new or modified
     if (this.isModified("eventId") || this.isNew) {
         const eventExists = await Event.findById(this.eventId);
 
         if (!eventExists) {
-            const error = new Error(
+            throw new Error(
                 `Event with ID ${this.eventId} does not exist. Cannot create booking for non-existent event.`
             );
-            return next(error);
         }
     }
-
-    next();
 });
 
 // Create and export the Booking model (check if already compiled to prevent OverwriteModelError)
