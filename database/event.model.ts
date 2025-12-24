@@ -185,7 +185,7 @@ function normalizeTime(timeStr: string): string {
  * - Normalizes date to ISO format
  * - Normalizes time to consistent 24-hour format
  */
-EventSchema.pre("save", async function (next) {
+EventSchema.pre("save", async function () {
     // Generate slug only if title is new or modified
     if (this.isModified("title") || this.isNew) {
         const baseSlug = generateSlug(this.title);
@@ -218,8 +218,6 @@ EventSchema.pre("save", async function (next) {
     if (this.isModified("time") || this.isNew) {
         this.time = normalizeTime(this.time);
     }
-
-    next();
 });
 
 // Create and export the Event model (check if already compiled to prevent OverwriteModelError)

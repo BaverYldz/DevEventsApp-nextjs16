@@ -1,9 +1,24 @@
 import type { NextConfig } from "next";
+import { hostname } from "os";
 
 const nextConfig: NextConfig = {
+  images: {
+    remotePatterns: [
+      {
+        protocol: 'https',
+        hostname: 'res.cloudinary.com',
+      },
+      {
+        protocol: 'https',
+        hostname: 'images.unsplash.com',
+      },
+    ],
+  },
   reactCompiler: true,
+  // Turbopack Windows symlink sorunu nedeniyle kapatıldı (OS error 1314)
+  // turbopack option removed - Turbopack is not enabled by default
   experimental: {
-    turbopackFileSystemCacheForDev: true,
+    // turbopackFileSystemCacheForDev: true,
   },
   async rewrites() {
     return [
