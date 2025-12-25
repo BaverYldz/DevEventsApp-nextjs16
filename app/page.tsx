@@ -10,7 +10,7 @@ const BASE_URL = process.env.NEXT_PUBLIC_BASE_URL || '';
 const home = async () => {
 
   const response = await fetch(`${BASE_URL}/api/events`, {
-    cache: 'no-store'
+    // cache: 'no-store'
   })
   const { events } = await response.json();
 
